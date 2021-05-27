@@ -1,0 +1,39 @@
+#   Make file for Turbo Assembler
+#   Copyright (c) 1996 by Borland International, Inc.
+#       make -B                 Will build the release version
+#       make -B -DDEBUG         Will build the debug version
+
+NAME = DevId32
+OBJS = $(NAME).obj Ring0.obj ATAId32.obj DevIdNT.obj StdIO.obj
+RES  = $(NAME).res
+STUB = devid.exe
+
+!if $d(DEBUG)
+TASMCFG=/zi
+LINKCFG=/v
+!else
+TASMCFG=/m /q /t
+LINKCFG=/x /U0.0 /V4.0 /W4.0 /S:1000 /H:1000
+!endif
+
+!if $d(MAKEDIR)
+IMPORT=$(MAKEDIR)\..\Lib\import32.lib
+!else
+IMPORT=import32.lib
+!endif
+
+
+$(NAME).exe: $(OBJS) $(RES)
+  ulink /Tpe /ap /c /ZX$(STUB) $(LINKCFG) $(OBJS), $(NAME).exe,, $(IMPORT),, $(RES)
+  @if exist *.obj del *.obj
+  @if exist *.lst del *.lst
+  @if exist *.res del *.res
+  @if exist *.tr2 del *.tr2
+  @if exist *.td2 del *.td2
+  @if exist *.tds del *.tds
+
+.asm.obj:
+  tasm32 /ml $(TASMCFG) $&.asm
+
+.rc.res:
+  brcc32 $&.rc

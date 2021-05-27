@@ -1,0 +1,5 @@
+#include "resource.h"
+
+IDI_APPICON	ICON	DISCARDABLE	"DevId32.ico"
+
+CREATEPROCESS_MANIFEST_RESOURCE_ID	RT_MANIFEST	".\Manifest.xml"
